@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News</title>
+    <link rel="stylesheet" href="/public/styles/styles.css">
+</head>
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+    <script type='text/javascript' src = "/public/scripts/main.js"></script>
+
+    <div class="row">
+        <div class="headTitle">
+            <h2>ITESO news app</h2>
+        </div>
+        <div>
+            <form>
+                <input type="button" onclick="window.location.href='http://localhost:3000/users';" value="New user FORM" />
+            </form>
+        </div>
+    </div>
+    
+    <form class="search" action="">
+            <label for=""></label>
+        <input class = "col-4 input" type="text"><br>
+        <input type="submit">
+    </form>
+
+    <script id="responsiveTemplate" type="text/x-handlebars-template">
+        {{#each articles}}
+            <div class="col-1 table">
+                <li>
+                    <div class="photo">
+                         <img src="{{urlToImage}}" alt="">
+                    </div>
+                     <div class="info">
+                        <p>{{content}}</p>
+                     </div>
+                    <div class="description">
+                         <p>{{description}}</p>
+                    </div>
+                    <div class="urlButton">
+                        <form action="{{url}}">
+                            <input type="submit" value="Read More" />
+                        </form>
+                    </div>
+
+                </li>
+            </div>
+        {{/each}}
+    </script>
+
+
+    <div class="page-grap">
+        <div id="news-container"></div>
+
+    </div>
+
+    <script>
+        const searchForm = document.querySelector('.search');
+        const input = document.querySelector('.input');
+        var container = document.getElementById('.myContainer');
+
+        searchForm.addEventListener('submit', retrieve)
+
+        function retrieve(e){
+
+            e.preventDefault();
+
+            const apiKey = 'a52e5ae581a64a90ac728505c40789a4';
+
+            let topic = input.value;
+
+            //let url = `https://localhost:3000/news?q=${topic}&apiKey=${apiKey}`
+            let url = `https://localhost:3000/news?q=${topic}`
+            fetch(url).then((res)=>{
+                return res.json();
+
+            }).then((data)=>{
+                console.log(data)
+                const rawTemplate = document.getElementById("responsiveTemplate").innerHTML; 
+                const compiledTemplate = Handlebars.compile(rawTemplate);
+                const ourGeneratedHTML = compiledTemplate(data);
+                const newscontain = document.getElementById("news-container");
+                newscontain.innerHTML = ourGeneratedHTML;
+               
+            })
+        }
+    </script>
+
+</body>
+</html>
